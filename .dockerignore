@@ -1,0 +1,17 @@
+# Keep the Docker build context small and secret-free.
+# frontend/node_modules is committed to git (thousands of files) and the
+# repo root data/ dir holds a local SQLite database and uploads — neither
+# may enter the image. The frontend is rebuilt from package-lock.json and
+# production data lives on the Fly volume mounted at /data.
+.git
+.github
+.env
+.venv
+node_modules
+frontend/node_modules
+__pycache__
+*.pyc
+data/
+*.db
+docs
+examples

@@ -1,0 +1,79 @@
+# JobApplyAI web app on Fly.io — see docs/fly-deployment-notes.md for the
+# full launch runbook, and docs/hosting-domain-flyio-github-deployment-adr.md
+# for the decisions behind this shape. Phase 1 (this file) is the web app
+# only — roughly $14/mo (Machine ~$13.39 + 5 GB volume ~$0.75).
+#
+# OPEN CHOICE: the app name "jobapplyai" is assumed, not verified — Fly app
+# names are globally unique, so if it is taken, pick another (e.g.
+# "jobapplylive") and update PUBLIC_BASE_URL / CORS_ORIGINS below to match
+# the resulting <app>.fly.dev hostname.
+
+app = "jobapplyai"
+primary_region = "sjc"
+
+[build]
+  dockerfile = "Dockerfile"
+
+# Non-secret configuration. Real secrets (SMTP_PASSWORD, SMTP_USER,
+# ADMIN_EMAILS, JOBAPPLY_BOOTSTRAP_INVITE, optional API keys) live only in
+# Fly Secrets (set by scripts/fly-bootstrap.sh) and never in this file.
+#
+# Phase 1 deliberately sets NO DATABASE_URL: backend/app/db.py then falls
+# back to the SQLite file under JOBAPPLY_DATA_DIR, which lives on the
+# volume below. The Postgres migration is phase 2.
+#
+# PUBLIC_BASE_URL and CORS_ORIGINS point at the fly.dev hostname for the
+# first deploy. When jobapplylive.com is attached later, change BOTH to
+# https://jobapplylive.com and redeploy, or verification / password-reset
+# email links will point at the wrong origin.
+[env]
+  JOBAPPLY_HOSTED = "true"
+  SESSION_COOKIE_SECURE = "true"
+  FORMFILL_HEADLESS = "true"
+  JOBAPPLY_DATA_DIR = "/data"
+  PUBLIC_BASE_URL = "https://jobapplyai.fly.dev"
+  CORS_ORIGINS = "https://jobapplyai.fly.dev"
+  SMTP_HOST = "smtp.gmail.com"
+  SMTP_PORT = "587"
+  SMTP_FROM = "jobapplyai.app@gmail.com"
+  MAX_RUNS_PER_DAY = "20"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # Always-on, per the ADR (~$13.39/mo for this size). Auto-stop is NOT
+  # enabled: streamed pre-fill sessions hold live browser state in this
+  # process's memory, and a stopped Machine would drop them.
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+  [http_service.concurrency]
+    type = "connections"
+    soft_limit = 25
+    hard_limit = 50
+
+# Everything under JOBAPPLY_DATA_DIR (/data) is on local disk: in phase 1
+# that is BOTH the SQLite database (/data/jobapply.db) and the uploaded
+# resumes (/data/uploads), so both need this volume to survive
+# deploys/restarts. Create it BEFORE the first deploy (the bootstrap
+# script does this):
+#   fly volumes create jobapply_data --app jobapplyai --region sjc --size 5
+# (5 GB ≈ $0.75/mo. A volume pins this app to one Machine in one zone,
+# which matches the one-Machine launch shape.)
+[[mounts]]
+  source = "jobapply_data"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-2x"
+  memory = "2gb"
+
+[checks]
+  [checks.health]
+    type = "http"
+    port = 8080
+    method = "get"
+    path = "/api/health"
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "30s"

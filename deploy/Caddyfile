@@ -1,0 +1,19 @@
+# Caddy is the app's public face inside the container (Fly terminates TLS
+# and forwards to port 8080). The frontend calls the API with relative
+# /api/... paths, so static files and the API must share one origin:
+#   /api/*  -> uvicorn on loopback (reverse_proxy also upgrades the
+#              pre-fill session WebSocket at /api/prefill-sessions/*/stream)
+#   else    -> the built SPA, with index.html fallback for client routing
+:8080 {
+	root * /app/frontend/dist
+	encode gzip
+
+	handle /api/* {
+		reverse_proxy 127.0.0.1:8000
+	}
+
+	handle {
+		try_files {path} /index.html
+		file_server
+	}
+}
