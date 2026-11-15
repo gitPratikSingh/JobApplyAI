@@ -112,9 +112,22 @@ Sample data throughout; rendered in the app's current visual scheme.
 
 ![Home — Jobs: slim run bar, Needs you counts, compact match rows with one expanded detail](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-home.png)
 
+Before any run, the same home is an empty state: the brief panel is open,
+both queues sit at zero, and the results area shows "No matches yet" with a
+short ready-to-run checklist.
+
+![Home — empty state before the first run: brief panel open, queues at zero, "No matches yet" with the ready-to-run checklist](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-home-empty.png)
+
 ### Applications — status sections
 
 ![Applications: status sections with counts, compact rows, manual stage dropdown on an applied job](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-applications.png)
+
+Clicking an application expands its detail in place. Here, one application
+in "Filled — awaiting your submit" is expanded: the form-fill summary, the
+two questions that still need the user — named, not just counted — and Mark
+submitted as the primary action.
+
+![Applications — one application expanded in "Filled — awaiting your submit": form-fill summary, the two named needs-you questions, Mark submitted primary](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-applications-expanded.png)
 
 ## Non-goals
 
