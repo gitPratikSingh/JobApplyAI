@@ -80,13 +80,6 @@ the frame and gives the panels internal structure:
 - Search results under All matches are the same compact rows as everywhere
   else (below).
 
-At scale — a broad search can match a few hundred jobs — the All matches
-list never grows the page: it scrolls inside the right panel under its
-pinned header and loads ten rows at a time behind a Show more control. A
-summary line (total matches, top score, how many are new) plus a filter box
-and a New-only chip sit above the rows, so the shape of the result set is
-clear before a single row is read.
-
 ### Compact rows, detail on demand
 
 Match results and application lists render as one-line rows:
@@ -192,7 +185,7 @@ order a user moves through the app.
 
 ### Home — All matches at scale
 
-![Home — All matches at 200 results: filter box and New-only chip over a summary line, ten compact rows in the panel's own scroll area, "Showing 10 of 200" with Show more](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-home-matches.png)
+![Home — All matches at 200 results: filter box and New-only chip over a summary line, ten compact rows in the panel's own scroll area, "Showing 10 of 200" with Show more](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/home-matches.png)
 
 ### Applications — status sections
 
