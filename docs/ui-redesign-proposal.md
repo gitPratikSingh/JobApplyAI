@@ -110,13 +110,16 @@ Sample data throughout; rendered in the app's current visual scheme.
 
 ### Home — Jobs
 
-![Home — Jobs: slim run bar, Needs you counts, compact match rows with one expanded detail](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-home.png)
-
-Before any run, the same home is an empty state: the brief panel is open,
+Before any run, the home is an empty state: the brief panel is open,
 both queues sit at zero, and the results area shows "No matches yet" with a
 short ready-to-run checklist.
 
 ![Home — empty state before the first run: brief panel open, queues at zero, "No matches yet" with the ready-to-run checklist](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-home-empty.png)
+
+After a run, the same home carries the results: compact rows, with one
+item's detail expanded in place.
+
+![Home — Jobs: slim run bar, Needs you counts, compact match rows with one expanded detail](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-home.png)
 
 ### Applications — status sections
 
