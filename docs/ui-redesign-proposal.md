@@ -1,4 +1,4 @@
-# Proposal: a simpler UI — compact lists, one detail at a time
+# Proposal: a simpler UI — keep the workspace, compact the lists
 
 Documentation only. No code changes in this PR.
 
@@ -22,9 +22,12 @@ only layout and hierarchy.
 
 ## Principles
 
-- **Keep the tabs and the look.** Navigation stays a small set of tabs
-  (renamed Jobs / Applications / Companies / Profile). Colors, fonts, and
-  components are unchanged — this is layout, not a rebrand.
+- **Keep the tabs, the look — and the two-panel workspace.** Navigation stays
+  a small set of tabs (renamed Jobs / Applications / Companies / Profile).
+  Colors, fonts, and components are unchanged. Each main page keeps the
+  app's current frame: a left rail of intent and stable context, and a right
+  panel where the work happens. The redesign compacts what is *inside* the
+  panels; it does not flatten pages into single-column feeds.
 - **Separate the list from the detail.** Lists are compact rows; the full
   detail exists for one item at a time.
 - **Sections derive from application status only.** Status and pipeline stage
@@ -36,17 +39,46 @@ only layout and hierarchy.
 - **Reuse the controls that exist.** No duplicate buttons; each item keeps the
   actions it already has.
 
+## The frame: two panels on every main page
+
+The current home already has the right shape: a two-column workspace. The
+left rail holds what the user tells the agent and who the agent is working
+for — the brief, the specific-job box, the profile summary. The right panel
+holds what the agent produced. That contract is what makes the page feel
+calm: controls don't move, results land in one place.
+
+The length problem was never the frame. It is what gets stacked inside the
+right panel: profile summary, a raw log console, every prepared application
+as a full card, then every match again as a full article. This proposal keeps
+the frame and gives the panels internal structure:
+
+- **The left rail is sticky.** It stays in reach while the right panel
+  scrolls — the page scrolls the work, not the tools. The rail holds stable
+  context only: profile summary, the brief, recent runs.
+- **The right panel is output only.** The profile summary moves out of it
+  into the rail. Run progress becomes one slim status strip at the top of
+  the panel (current step + counts), with the full log behind a Details
+  toggle, so the panel reads as results, not as a terminal.
+- **Inside the panel, work is sectioned** by what needs the user, with slim
+  rows and one expanded detail at a time (below). On narrow screens the
+  existing one-column collapse still applies: rail first, then work.
+
 ## The design
 
 ### Home (Jobs)
 
-- The "brief the agent" panel collapses to a slim bar. Run progress is one
-  thin status line (e.g. "Run complete — 20 matches") instead of a scrolling
-  live log on the page.
-- A **"Needs you"** summary strip shows exactly two queues, as counts:
-  **Needs review** and **Forms to submit**. Selecting one navigates to that
-  work in Applications; the home page shows the counts, not the cards.
-- Search results are compact rows (see below).
+- **Left rail:** a "You" card with the profile summary and skills; the brief;
+  "Apply to a specific job"; recent runs. Before the first run the brief is
+  fully open and the profile card waits on a resume. Once a run exists, the
+  brief collapses to a one-line summary with an Edit button, so the rail
+  stays short.
+- **Right panel:** the status strip, then a segmented toggle — **Prepared**
+  (the actionable queue, the default) and **All matches** — instead of two
+  stacked lists that duplicate the prepared jobs. Prepared work is sectioned
+  by status: **Needs review**, **Filled — ready to submit**, **Applied**,
+  each header counting its own section.
+- Search results under All matches are the same compact rows as everywhere
+  else (below).
 
 ### Compact rows, detail on demand
 
@@ -99,6 +131,40 @@ stage:
   user. The app cannot observe interviews, so it never infers stage progress,
   and there is no follow-up-due feature.
 
+### Companies
+
+Companies gets the same frame, using only what the page already does:
+
+- **Left rail:** the add-company form (name, careers page, or job link) and
+  an "At a glance" summary — how many of the tracked companies are searched
+  on every run, open jobs at last search, how many the user added, how many
+  need attention. These are the numbers the page already computes for its
+  summary line, given a permanent home.
+- **Right panel:** the filter box and the four views that already exist —
+  All / Added by you / Needs attention / Turned off — as a segmented control,
+  then one slim row per company: name, ATS, open-job count when the board is
+  working, and a status pill in human words (Working / Board gone / Not
+  responding / Not searched yet / Off). Each row keeps its existing actions:
+  Turn off / Turn on, and Remove on companies the user added.
+
+### Profile
+
+Profile gets the same frame:
+
+- **Left rail:** identity — name, target titles, locations — and the resume
+  summary with skills. This is the same "You" card as the home rail, so the
+  stable context looks identical wherever it appears. The rail also carries
+  the page's existing note: uploading a resume on a run refreshes the
+  profile, and edits here are kept until the next run.
+- **Right panel:** the profile form, with the fields it already has, followed
+  by **Application answers** and **Other saved answers** as today.
+- **The answer bank gets a coverage meter.** The Application answers section
+  header counts how many of the nine standard questions are answered, with a
+  simple bar under it. Blanks are marked "Not answered" instead of rendering
+  as empty fields, because a blank is exactly what gets flagged for the user
+  on every form. The meter uses only data the page already loads; it is the
+  one deliberate addition carried over from this proposal's earlier draft.
+
 ### Previously applied
 
 The "Previously applied" list and the seen-records behind it are existing
@@ -106,20 +172,16 @@ behavior; this redesign does not change them.
 
 ## Screens
 
-Sample data throughout; rendered in the app's current visual scheme.
+Sample data throughout; rendered in the app's current visual scheme, in the
+order a user moves through the app.
+
+### Home — before the first run
+
+![Home — before the first run: full brief open in the left rail, profile waiting on a resume, right panel idle with the ready-to-run checklist](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-home-panels-empty.png)
 
 ### Home — Jobs
 
-Before any run, the home is an empty state: the brief panel is open,
-both queues sit at zero, and the results area shows "No matches yet" with a
-short ready-to-run checklist.
-
-![Home — empty state before the first run: brief panel open, queues at zero, "No matches yet" with the ready-to-run checklist](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-home-empty.png)
-
-After a run, the same home carries the results: compact rows, with one
-item's detail expanded in place.
-
-![Home — Jobs: slim run bar, Needs you counts, compact match rows with one expanded detail](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-home.png)
+![Home — Jobs in the two-panel frame: left rail with profile, collapsed brief, specific-job box, and recent runs; right panel with status strip, Prepared / All matches toggle, and status sections with one letter expanded](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-home-panels.png)
 
 ### Applications — status sections
 
@@ -132,10 +194,19 @@ submitted as the primary action.
 
 ![Applications — one application expanded in "Filled — awaiting your submit": form-fill summary, the two named needs-you questions, Mark submitted primary](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-applications-expanded.png)
 
+### Companies
+
+![Companies: add form and at-a-glance summary in the left rail; filter, view tabs, and slim company rows with status pills in the right panel](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-companies.png)
+
+### Profile
+
+![Profile: identity and resume summary in the left rail; profile fields, the answer bank with its coverage meter at 7 of 9, and other saved answers in the right panel](https://raw.githubusercontent.com/gitPratikSingh/JobApplyAI/docs/ui-redesign-proposal/docs/mockups/jobapplyai-redesign-mockup-profile.png)
+
 ## Non-goals
 
 - No unified, stage-filtered single list; matches and applications stay
   separate lists in their separate tabs.
+- No flattening of the two-panel frame into single-column pages.
 - No new backend data. In particular there is no salary anywhere in the data,
   and no match-data join is needed, because match rows and application rows
   stay separate.
